@@ -1,15 +1,15 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.0;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
 @title GovToken
 @author Too-Far
-@notice Contract to implement a basic governance token. Will allow minting, 
+@notice Contract to implement a basic governance token. Will allow minting,
 @notice Group minting and burning from a given address
 @notice Contract is upgradable
  */
@@ -25,21 +25,20 @@ contract GovToken is
         ///@dev Ensure that only whitelisted addresses can call a method
         modifier onlyWhiteListed() {
             require(
-                whitelist[_msg.sender()] == true,
+                whitelist[_msgSender()] == true,
                 "Caller is not a whitelisted address"
             );
             _;
         }
 
-        /**
-        @dev: this function is the constructor. takes an array of addresses, and an array of amounts along with a string representing the token name. 
+        /*
         Creates the token and calls the mint multiple
-        @notice: This constructor is set up to initialize with an initial list of addresses to have tokens minted to
+        ///@notice: This constructor is set up to initialize with an initial list of addresses to have tokens minted to
          */
-        function initialize(address[] memory tokenHolders, uint256[] memory amounts) public initializer {
-            OwnableUpgradeable._Ownable_init();
-            ERC20BurnableUpgradeable._ERC20Burnable_init();
-            ERC20Upgradeable._ERC20_init("COOKTEAM", "COOKTEAM");
+        function initialize() public initializer {
+            OwnableUpgradeable.__Ownable_init();
+            ERC20BurnableUpgradeable.__ERC20Burnable_init();
+            ERC20Upgradeable.__ERC20_init("COOKTEAM", "COOKTEAM");
         }
 
         ///@dev Allows the owner of the contract to mint tokens to a given address
@@ -58,7 +57,7 @@ contract GovToken is
                 "There is a mismatch between the addresses and amounts"
             );
 
-            for (uint256 i=0; i< tokenHolders.length; i++) {
+            for (uint256 i = 0; i < tokenHolders.length; i++) {
                 mint(tokenHolders[i], amounts[i]);
             }
         }
@@ -72,7 +71,7 @@ contract GovToken is
             override
             onlyOwner
         {
-            super._burn(account, amount)
+            super._burn(account, amount);
         }
 
         function transfer(address recipient, uint256 amount)

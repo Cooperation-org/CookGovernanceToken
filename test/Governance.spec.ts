@@ -4,21 +4,20 @@ import { Deployment } from "hardhat-deploy/types";
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
 
-import { Governance } from "../typechain/Governance";
-import tokenHolders from "../config/governance-migration.json";
+import { GovToken } from "../typechain/GovToken";
 
 use(chaiAsPromised);
 
 describe("Whats Cookin Governance Token", () => {
     let deployer: string;
     let signers: Signer[];
-    let GovToken: Governance;
+    let GovToken: GovToken;
     let GovTokenDeployment: Deployment;
     let accountsAddresses: string[];
 
     before(async () => {
         const namedAccounts = await getNamedAccounts();
-        deployer = namedAccounts.depoloyer;
+        deployer = namedAccounts.deployer;
         signers = await ethers.getSigners();
 
         accountsAddresses = await Promise.all(
@@ -29,19 +28,18 @@ describe("Whats Cookin Governance Token", () => {
     });
 
     beforeEach(async () => {
-        ({Governance: GovTokenDeployment} = await deployments.fixture());
+        ({GovToken: GovTokenDeployment} = await deployments.fixture());
 
         GovToken = (await ethers.getContractAt(
             GovTokenDeployment.abi,
             GovTokenDeployment.address,
             signers[0]
-        )) as Governance;
+        )) as GovToken;
     });
 
     describe("Initialize()", async () => {
         it("Should sucessfully deploy contract", async () => {
             expect(GovToken.address).to.not.be.null;
-            expect(tokenHolders.holders.length).to.be.greaterThan(0);
         });
     });
 
@@ -70,7 +68,7 @@ describe("Whats Cookin Governance Token", () => {
             await expect(
                 GovernanceToken.mint(await notOwner.getAddress(), 10000)
             ).to.be.rejectedWith(
-                "VM Exception while processing trnsaction revert Ownable: caller is not the owner"
+                "VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner"
             );
         });
     });
@@ -104,7 +102,7 @@ describe("Whats Cookin Governance Token", () => {
             await expect(
                 GovToken.mintMultiple([newHolder, anotherHolder], [balance])
             ).to.be.rejectedWith(
-                "VM Exception while processing transaction: revert Token holders and amounts lengths must match"
+                "VM Exception while processing transaction: reverted with reason string 'There is a mismatch between the addresses and amounts"
             );
         });
     });
@@ -146,7 +144,7 @@ describe("Whats Cookin Governance Token", () => {
             await expect(
                 GovernanceToken.burnFrom(newHolder, balance)
             ).to.be.rejectedWith(
-                "VM Exception while processing transaction: revert Ownable: caller is not the owner"
+                "VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner"
             );
         });
     });
@@ -163,7 +161,7 @@ describe("Whats Cookin Governance Token", () => {
             await expect(
                 GovernanceToken.transfer(newHolder, balance)
             ).to.be.rejectedWith(
-                "VM Exception while processing transaction: revert Governance: caller is not a whitelisted address"
+                "VM Exception while processing transaction: reverted with reason string 'Caller is not a whitelisted address"
             );
         });
 

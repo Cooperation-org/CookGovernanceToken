@@ -1,6 +1,6 @@
 import { DeployFunction } from 'hardhat-deploy/types';
 
-const args = require('../arguments');
+// const args = require('../arguments');
 
 const deployFunct: DeployFunction = async function({
     deployments,
@@ -16,7 +16,7 @@ const deployFunct: DeployFunction = async function({
             methodName: "initialize",
             proxyContract: "OpenZeppelinTransparentProxy"
         },
-        args
+        // args
     });
     console.log("Deployed to: ", res.address)
 };

@@ -14,7 +14,13 @@ dotenv.config();
 
 const config: HardhatUserConfig = {
     defaultNetwork: 'hardhat',
-    solidity: '^0.8.0',
+    solidity: {
+        compilers: [
+            {
+                version: "0.8.3"
+            }
+        ]
+    },
     paths: {
         sources: './contracts',
         artifacts: './artifacts'

@@ -180,11 +180,31 @@ describe("Whats Cookin Governance Token", () => {
             const balance = 100000000;
 
             const transferer = accountsAddresses[2];
-            const transfere = accountsAddresses[4];
+            const transferee = accountsAddresses[4];
             await GovToken.mint(transferer, balance);
             await GovernmentToken1.whitelistAdd(transferer);
 
-            await GovernmentToken2.transfer(transfere, 1);
+            await GovernmentToken2.transfer(transferee, 1);
         });
     });
+    describe("whitelistAdd()", async () => {
+        it("Should add an address to the whitelisted mapping", async () => {
+            // const GovToken = await ethers.getContractAt(
+            //     GovTokenDeployment.abi,
+            //     GovTokenDeployment.address,
+            // )
+            const address = accountsAddresses[1];
+            await GovToken.whitelistAdd(address);
+            const isWhitelisted = await GovToken.whitelist(address);
+            await expect(isWhitelisted).to.be.true;
+        })
+    })
+    describe("whitelistRemove()", async () => {
+        it("Should remove make address whitelisted == false", async () => {
+            const address = accountsAddresses[1];
+            await GovToken.whitelistRemove(address);
+            const isNotWhiteListed = await GovToken.whitelist(address);
+            await expect(isNotWhiteListed).to.be.false;
+        })
+    })
 });

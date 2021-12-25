@@ -35,10 +35,15 @@ contract GovToken is
         Creates the token and calls the mint multiple
         ///@notice: This constructor is set up to initialize with an initial list of addresses to have tokens minted to
          */
-        function initialize() public initializer {
+        function initialize(address _owner) public initializer {
             OwnableUpgradeable.__Ownable_init();
             ERC20BurnableUpgradeable.__ERC20Burnable_init();
             ERC20Upgradeable.__ERC20_init("COOKTEAM", "COOKTEAM");
+            OwnableUpgradeable.transferOwnership(_owner);
+        }
+
+        function changeOwner(address _newOwner) public onlyOwner {
+            OwnableUpgradeable.transferOwnership(_newOwner);
         }
 
         ///@dev Allows the owner of the contract to mint tokens to a given address

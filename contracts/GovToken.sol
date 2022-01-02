@@ -51,7 +51,7 @@ contract GovToken is
             super._mint(to, amount);
         }
 
-        ///@dev This function mints tokens to multiple addresses. Called from constructor,
+        ///@dev This function mints tokens to multiple addresses.
         ///@dev will allow for a csv setup passed in as arrays
         function mintMultiple(
             address[] memory tokenHolders,

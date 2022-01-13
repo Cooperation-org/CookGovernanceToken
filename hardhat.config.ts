@@ -27,7 +27,7 @@ const config: HardhatUserConfig = {
     },
     networks: {
         maticMainnet: {
-            url: `https://rpc-mainnet.matic.network`,
+            url: process.env.POLYGON_RPC_URL,
             accounts: [`${process.env.POLYGON_PRIVATE_KEY}`]
         },
         mumbai: {

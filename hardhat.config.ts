@@ -9,6 +9,7 @@ import "solidity-coverage";
 import "hardhat-gas-reporter";
 import "hardhat-deploy";
 import "hardhat-typechain";
+import 'hardhat-abi-exporter'
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ const config: HardhatUserConfig = {
             accounts: [`${process.env.POLYGON_PRIVATE_KEY}`]
         },
         rinkeby: {
-            url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+            url: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
             accounts: [`${process.env.RINKEBY_PRIVATE_KEY}`]
         },
         mainnet: {
@@ -52,6 +53,9 @@ const config: HardhatUserConfig = {
     },
     namedAccounts: {
         deployer: 0
+    },
+    abiExporter: {
+        path: './data/abi'
     }
 };
 

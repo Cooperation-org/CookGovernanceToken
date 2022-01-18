@@ -1,10 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /**
 @title Whats Cookin Governance Token
@@ -15,9 +14,9 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  */
 
 contract GovToken is
-    Initializable,
-    ERC20BurnableUpgradeable,
-    OwnableUpgradeable
+    ERC20,
+    ERC20Burnable,
+    Ownable
     {
         ///@notice mapping to track users that are whitelisted
         mapping(address => bool) public whitelist;
@@ -32,23 +31,12 @@ contract GovToken is
         }
         ///@notice Create token and transfer ownership
         ///@dev acts as constructor
-        function initialize() public initializer {
-            OwnableUpgradeable.__Ownable_init();
-            ERC20BurnableUpgradeable.__ERC20Burnable_init();
-            ERC20Upgradeable.__ERC20_init("COOKTEAM", "COOKTEAM");
+        constructor() ERC20("Cook Team", "COOKTEAM")  {}
+
+        function mint(address recipient, uint256 amount) public onlyOwner {
+            _mint(recipient, amount);
         }
 
-        ///@notice changes the owner of the contract
-        ///@dev Only callable by current contract owner
-        function changeOwner(address _newOwner) public onlyOwner {
-            OwnableUpgradeable.transferOwnership(_newOwner);
-        }
-
-        ///@notice mint tokens to a single address
-        ///@dev Only contract owner can call this function
-        function mint(address to, uint256 amount) public onlyOwner {
-            super._mint(to, amount);
-        }
 
         ///@notice Mint tokens to an array of addresses
         ///@dev requires array of addresses and an additional array of amounts (must match)
@@ -62,31 +50,10 @@ contract GovToken is
             );
 
             for (uint256 i = 0; i < tokenHolders.length; i++) {
-                mint(tokenHolders[i], amounts[i]);
+                _mint(tokenHolders[i], amounts[i]);
             }
         }
-        ///@notice Allow burning of tokens that have already been issued (removes token from given address)
-        ///@dev Callable by contract owner
-        function burnFrom(address account, uint256 amount)
-            public
-            override
-            onlyOwner
-        {
-            super._burn(account, amount);
-        }
-        ///@notice Allows for transfer of tokens between addresses
-        ///@dev returns bool (true) for successful transfer
-        function transfer(address recipient, uint256 amount)
-            public
-            virtual
-            override
-            onlyWhiteListed
-            returns (bool)
-        {
-            _transfer(_msgSender(), recipient, amount);
-            return true;
-        }
-
+ 
         ///@notice Add user address to whitelist
         ///@dev Only callable by contract owner
         function whitelistAdd(address _add) external onlyOwner {

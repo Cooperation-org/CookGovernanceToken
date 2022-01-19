@@ -1,28 +1,27 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /**
-@title GovToken
-@author Too-Far
-@notice Contract to implement a basic governance token. Will allow minting,
+@title Whats Cookin Governance Token
+@author Ryan Turner
+@notice Contract to implement a basic governance token. Will allow minting
 @notice Group minting and burning from a given address
 @notice Contract is upgradable
  */
 
 contract GovToken is
-    Initializable,
-    ERC20BurnableUpgradeable,
-    OwnableUpgradeable
+    ERC20,
+    ERC20Burnable,
+    Ownable
     {
-        ///@dev Create a mapping that will show all whitelisted addresses
+        ///@notice mapping to track users that are whitelisted
         mapping(address => bool) public whitelist;
 
-        ///@dev Ensure that only whitelisted addresses can call a method
+        ///@dev only allows whitelisted users to call a given function
         modifier onlyWhiteListed() {
             require(
                 whitelist[_msgSender()] == true,
@@ -30,29 +29,17 @@ contract GovToken is
             );
             _;
         }
+        ///@notice Create token and transfer ownership
+        ///@dev acts as constructor
+        constructor() ERC20("Cook Team", "COOKTEAM")  {}
 
-        /*
-        Creates the token and calls the mint multiple
-        ///@notice: This constructor is set up to initialize with an initial list of addresses to have tokens minted to
-         */
-        function initialize(address _owner) public initializer {
-            OwnableUpgradeable.__Ownable_init();
-            ERC20BurnableUpgradeable.__ERC20Burnable_init();
-            ERC20Upgradeable.__ERC20_init("COOKTEAM", "COOKTEAM");
-            OwnableUpgradeable.transferOwnership(_owner);
+        function mint(address recipient, uint256 amount) public onlyOwner {
+            _mint(recipient, amount);
         }
 
-        function changeOwner(address _newOwner) public onlyOwner {
-            OwnableUpgradeable.transferOwnership(_newOwner);
-        }
 
-        ///@dev Allows the owner of the contract to mint tokens to a given address
-        function mint(address to, uint256 amount) public onlyOwner {
-            super._mint(to, amount);
-        }
-
-        ///@dev This function mints tokens to multiple addresses. Called from constructor,
-        ///@dev will allow for a csv setup passed in as arrays
+        ///@notice Mint tokens to an array of addresses
+        ///@dev requires array of addresses and an additional array of amounts (must match)
         function mintMultiple(
             address[] memory tokenHolders,
             uint256[] memory amounts
@@ -63,37 +50,18 @@ contract GovToken is
             );
 
             for (uint256 i = 0; i < tokenHolders.length; i++) {
-                mint(tokenHolders[i], amounts[i]);
+                _mint(tokenHolders[i], amounts[i]);
             }
         }
-        /**
-        @dev Allows contract owner to burn tokens that are in a given address
-        @notice A use case for this would be if a user is kicked from the DAO
-        The contract owner can reclaim and burn their tokens
-         */
-        function burnFrom(address account, uint256 amount)
-            public
-            override
-            onlyOwner
-        {
-            super._burn(account, amount);
-        }
-
-        function transfer(address recipient, uint256 amount)
-            public
-            virtual
-            override
-            onlyWhiteListed
-            returns (bool)
-        {
-            _transfer(_msgSender(), recipient, amount);
-            return true;
-        }
-
+ 
+        ///@notice Add user address to whitelist
+        ///@dev Only callable by contract owner
         function whitelistAdd(address _add) external onlyOwner {
             whitelist[_add] = true;
         }
 
+        ///@notice Remove user address from whitelist
+        ///@dev Only callable by contract owner
         function whitelistRemove(address _remove) external onlyOwner {
             whitelist[_remove] = false;
         }

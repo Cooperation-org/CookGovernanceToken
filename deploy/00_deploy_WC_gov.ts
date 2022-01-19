@@ -1,6 +1,5 @@
 import { DeployFunction } from 'hardhat-deploy/types';
 
-// const args = require('../arguments');
 
 const deployFunct: DeployFunction = async function({
     deployments,
@@ -8,18 +7,15 @@ const deployFunct: DeployFunction = async function({
 }) {
     const { deploy } = deployments;
     const { deployer } = await getNamedAccounts();
+    console.log('deployer: ', deployer);
 
     const res = await deploy("GovToken", {
         from: deployer,
-        proxy: {
-            owner: deployer,
-            methodName: "initialize",
-            proxyContract: "OpenZeppelinTransparentProxy"
-        },
-        // args
+        skipIfAlreadyDeployed: false,
     });
     console.log("Deployed to: ", res.address)
 };
+
 
 export default deployFunct;
 deployFunct.tags = ["GovToken"];

@@ -207,4 +207,19 @@ describe("Whats Cookin Governance Token", () => {
             await expect(isNotWhiteListed).to.be.false;
         })
     })
+    describe("changeOwner()", async () => {
+        it("Should allow contract owner to be changed", async () => {
+            const GovernanceToken = await ethers.getContractAt(
+                GovTokenDeployment.abi,
+                GovTokenDeployment.address,
+                signers[5]
+            );
+
+            const newOwner = accountsAddresses[3];
+
+            const transferTx = await GovToken.changeOwner(newOwner);
+            await transferTx.wait();
+            await expect(await GovToken.owner()).to.equal(newOwner)
+        });
+    });
 });

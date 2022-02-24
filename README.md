@@ -24,3 +24,7 @@ Available commands:
 * `test` - Runs mocha tests
 * `test:coverage` - Runs solidity coverage
 * `typechain` - Generate Typechain typings for compiled contracts
+
+
+Contract address: 0x6487A3702C2b59610109c403F67657cd101AaEc7
+Gnosis Safe address: matic:0x44021CBeE888b40de6D3358B6c8f71c08af1DBED

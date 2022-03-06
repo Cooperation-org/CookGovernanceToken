@@ -11,11 +11,10 @@ import psycopg2
 # we do not open the db port to the world
 TAIGA_HOST = os.environ.get('WC_TAIGA_HOST', 'localhost')
 TAIGA_DB = os.environ.get('WC_TAIGA_DB', 'taiga')
-TAIGA_USER = os.environ.get('WC_TAIGA_USER', 'taiga')
+TAIGA_USER = os.environ.get('WC_TAIGA_USER', 'cook_user')
 TAIGA_PASS = os.environ.get('WC_TAIGA_PASS')
 
-
-db_conn = psycopg2.connect("dbname={} user={}".format(TAIGA_DB, TAIGA_USER))
+db_conn = psycopg2.connect("dbname={} host={} user={} password={}".format(TAIGA_DB, TAIGA_HOST, TAIGA_USER, TAIGA_PASS))
 #conn = psycopg2.connect("dbname=taiga user=taiga")
 
 GET_DONE_TAGS = """
@@ -42,6 +41,9 @@ def generate_cook_updates():
 
     df = pd.DataFrame(res)
     df.columns = ['story_id', 'subj', 'username', 'user_id', 'tags', 'slug', 'cook']
+
+    # only want these fields for review - what did the user do, to earn the cook
+    df = df[['subj', 'username', 'user_id', 'cook']]
 
     # now group by user
     gdf = df.groupby(['user_id','username'],as_index=False).agg(lambda x : x.sum() if x.dtype in ('float64', 'int', 'int32', 'int64') else ' '.join(x))

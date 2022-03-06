@@ -2,7 +2,7 @@ from flask import Flask
 from flask import render_template_string
 from flask_menu import Menu, register_menu
 
-from earnings import generate_udpates
+from earnings import generate_cook_updates
 from sheets import push_to_sheet
 
 app = Flask(__name__)
@@ -24,11 +24,12 @@ def gen_menu_string():
         """
 
 def tmpl_show_menu():
-    return render_template_string(get_menu_string())
+    return render_template_string(gen_menu_string())
 
 def show_data_to_approve(url):
     page = tmpl_show_menu()
-    page += render_template_string("View COOK to approve <a href='{{ url }}'>{{ url }}</a>", url=url)
+    page += render_template_string("View COOK to approve <a target='_new' href='{{ url }}'>{{ url }}</a>", url=url)
+    page += render_template_string("<p/><button>Approve and Post</button>")
     return page
 
 
@@ -55,7 +56,7 @@ def dashboard():
 @register_menu(app, '.review', 'Review', order=0)
 def review():
     # generate what the updates would be since last time
-    df = generate_updates()
+    df = generate_cook_updates()
 
     # push to a google sheet for $ and for cook
     url = push_to_sheet(df)

@@ -2,8 +2,8 @@ from flask import Flask
 from flask import render_template_string
 from flask_menu import Menu, register_menu
 
-from earnings import generate_cook_updates
-from sheets import push_to_sheet
+from earnings import generate_cook_updates, record_pending_cook
+from sheets import push_to_sheet, pull_from_sheet, move_sheet_to_processed
 
 app = Flask(__name__)
 Menu(app=app)
@@ -29,7 +29,7 @@ def tmpl_show_menu():
 def show_data_to_approve(url):
     page = tmpl_show_menu()
     page += render_template_string("View COOK to approve <a target='_new' href='{{ url }}'>{{ url }}</a>", url=url)
-    page += render_template_string("<p/><button>Approve and Post</button>")
+    page += render_template_string("<p/><a href='/dash/approve'><button>Approve and Post</button></a>")
     return page
 
 
@@ -68,10 +68,17 @@ def review():
 @register_menu(app, '.approve', 'Approve', order=0)
 def approve_cook():
 
-    # if approved, have button to register into pending totals
-    # then also tag and push to historical the items counted in pending
-    # and record the transaction in a log
-    return tmpl_show_menu()
+    df = pull_from_sheet()
+
+    # this should be atomic
+    try:
+        record_pending_cook(df)
+
+        move_sheet_to_processed()
+
+        return tmpl_show_menu() + "<H2>COOK is Recorded!</h2>"
+    except Exception as e:
+        return tmpl_show_menu() + "<h2>Error has occurred :</h2>{}".format(str(e))
 
 @app.route('/dash/mint', strict_slashes=False)
 @register_menu(app, '.mint', 'Mint', order=1)

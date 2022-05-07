@@ -18,8 +18,10 @@ db_conn = psycopg2.connect("dbname={} host={} user={} password={}".format(TAIGA_
 #conn = psycopg2.connect("dbname=taiga user=taiga")
 
 GET_DONE_TAGS = """
-    Select CAST(us.id as VARCHAR) as story_id, us.subject as subj, u.username as username, us.assigned_to_id as user_id, us.tags, ps.slug as status from  userstories_userstory us join projects_userstorystatus ps on us.status_id = ps.id join users_user u on us.assigned_to_id = u.id where ps.slug in ('done', 'ready-for-web', 'ready-for-mobile')
+    Select CAST(us.id as VARCHAR) as story_id, us.subject as subj, u.username as username, us.assigned_to_id as user_id, us.tags, ps.slug as status from  userstories_userstory us join projects_userstorystatus ps on us.status_id = ps.id join users_user u on us.assigned_to_id = u.id where ps.slug  = 'done' and us.tags @> ARRAY['pq']
     """
+    # for now only include ones already marked pq; later we will add up $ as well as cook
+    # for now do not include ready-for-web or ready-for-mobile
 
 def generate_cook_updates():
 
@@ -95,7 +97,7 @@ def record_pending_cook(df):
 
         cur.execute(update_q)
 
-
+        # move to status historical
         historical_q = "update userstories_userstory us set status_id = (select id from projects_userstorystatus where project_id = us.project_id and slug = 'historical') where id in ({})".format(task_ids)
 
         cur.execute(historical_q)

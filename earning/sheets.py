@@ -20,7 +20,8 @@ def push_to_sheet(df):
     #select the first sheet
     wks = sh[0]
 
-    #update the first sheet with df, starting at cell B2.
+    #replace the first sheet with df, starting at cell B2.
+    wks.clear(start='A2')
     wks.update_values(crange='A2',values = rows)
 
     return COOK_SHEET

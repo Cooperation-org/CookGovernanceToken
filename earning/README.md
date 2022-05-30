@@ -13,4 +13,6 @@ python3 dashboard.py
 3.1) Review the cook earnings and adjust as appropriate, if people did not record (later this should be by task and require oversight)
 3.2) Approve & Post
 
+The totals should now be recorded in the taiga table `pending_cook` and the recorded tasks should now be moved into the state 'historical'
+
 

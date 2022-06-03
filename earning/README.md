@@ -21,10 +21,12 @@ The totals should now be recorded in the taiga table `pending_cook` and the reco
 
 5) upload this to gnosis safe and fairmint
 
+6) move `pending_cook` to `posted_cook`
+
 -- one time only, for the first upload: --
 
-5) Download `/tmp/export.csv` ; download [Total Sum of COOK with emails](https://docs.google.com/spreadsheets/d/1Akq2c1ywZWZmK02lLIYM4QX2ajw9IWVOB5ODR4UmpiA/edit#gid=0)
+4.1) Download `/tmp/export.csv` ; download [Total Sum of COOK with emails](https://docs.google.com/spreadsheets/d/1Akq2c1ywZWZmK02lLIYM4QX2ajw9IWVOB5ODR4UmpiA/edit#gid=0)
 
-6) Use pandas to merge based on email to add a column to the total sum spreadsheet for the update
+4.2) Use pandas to merge based on email to add a column to the total sum spreadsheet for the update
 
 

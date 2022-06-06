@@ -24,3 +24,22 @@ Available commands:
 * `test` - Runs mocha tests
 * `test:coverage` - Runs solidity coverage
 * `typechain` - Generate Typechain typings for compiled contracts
+
+
+Contract address: 0x6487A3702C2b59610109c403F67657cd101AaEc7
+
+Gnosis Safe address: matic:0x44021CBeE888b40de6D3358B6c8f71c08af1DBED
+
+Gnosis safe URL: https://gnosis-safe.io/app/matic:0x44021CBeE888b40de6D3358B6c8f71c08af1DBED/transactions/0xcf5f5ed97825215f1b5b7c9c200d18d13e72e0fd46de19eb75daee765ead913f
+
+When you receive TEAMCOOK, you can transfer from your contract address?
+
+The multisig signers must approve transfers out of the safe
+
+Voting is by Snapshot
+
+https://snapshot.org/#/
+
+
+
+

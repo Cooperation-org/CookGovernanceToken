@@ -28,5 +28,6 @@ The totals should now be recorded in the taiga table `pending_cook` and the reco
 4.1) Download `/tmp/export.csv` ; download [Total Sum of COOK with emails](https://docs.google.com/spreadsheets/d/1Akq2c1ywZWZmK02lLIYM4QX2ajw9IWVOB5ODR4UmpiA/edit#gid=0)
 
 4.2) Use pandas to merge based on email to add a column to the total sum spreadsheet for the update
+(see original_merge_earning.py script)
 
 
